@@ -7,7 +7,7 @@ app.use(morgan('combined'));
 
 const PORT = process.env.PORT || 3000;
 
-// Funciones auxiliares para testear
+// Funciones auxiliares
 function reverseText(text) {
   return text.split('').reverse().join('');
 }
@@ -22,21 +22,11 @@ function analyzeText(text) {
   };
 }
 
-// GET /
-app.get('/', (req, res) => {
-  res.send(`Bienvenido a TextMaster API. Servidor: ${os.hostname()}`);
-});
-
-// GET /health
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'UP',
-    uptime: process.uptime()
+// SOLO iniciar el servidor si NO está Jest corriendo
+if (process.env.JEST_WORKER_ID === undefined) {
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
   });
-});
-
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-});
+}
 
 module.exports = { reverseText, analyzeText };
