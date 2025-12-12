@@ -1,0 +1,41 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]   
+
+jobs:
+
+  build_and_push:
+    name: Build & Push a GHCR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Iniciar sesión en GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir y Subir la imagen Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}:textmaster
+          
+
+  deploy:
+    name: Desplegar en Render
+    needs: build_and_push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Llamar al Deploy Hook de Render
+        run: curl "${{ secrets.RENDER_DEPLOY_HOOK }}"
