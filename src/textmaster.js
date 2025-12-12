@@ -22,7 +22,18 @@ function analyzeText(text) {
   };
 }
 
-// Aquí irán los endpoints (más adelante)
+// GET /
+app.get('/', (req, res) => {
+  res.send(`Bienvenido a TextMaster API. Servidor: ${os.hostname()}`);
+});
+
+// GET /health
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'UP',
+    uptime: process.uptime()
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);

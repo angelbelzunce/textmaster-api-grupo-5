@@ -1,9 +1,9 @@
 {
   "name": "textmaster-api",
   "version": "1.0.0",
-  "main": "src/app.js",
+  "main": "src/textmaster.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "node src/textmaster.js",
     "test": "jest"
   },
   "dependencies": {
