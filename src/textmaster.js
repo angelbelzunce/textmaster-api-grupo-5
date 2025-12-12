@@ -22,11 +22,43 @@ function analyzeText(text) {
   };
 }
 
-// SOLO iniciar el servidor si NO está Jest corriendo
+// Rutas de la API
+app.get('/', (req, res) => {
+  res.send(`Bienvenido a TextMaster API. Servidor: ${os.hostname()}`);
+});
+
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'UP',
+    uptime: process.uptime()
+  });
+});
+
+app.get('/reverse', (req, res) => {
+  const { text } = req.query;
+  if (!text) return res.status(400).json({ error: 'Falta el parámetro text' });
+  res.send(reverseText(text));
+});
+
+app.get('/analyze', (req, res) => {
+  const { text } = req.query;
+  if (!text) return res.status(400).json({ error: 'Falta el parámetro text' });
+  res.json(analyzeText(text));
+});
+
+app.get('/transform', (req, res) => {
+  const { text, action } = req.query;
+  if (!text || !action) return res.status(400).json({ error: 'Faltan parámetros' });
+  if (action === 'upper') return res.send(text.toUpperCase());
+  if (action === 'lower') return res.send(text.toLowerCase());
+  res.status(400).json({ error: 'Acción no válida' });
+});
+
+// Iniciar servidor solo si no estamos corriendo Jest
 if (process.env.JEST_WORKER_ID === undefined) {
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
   });
 }
 
-module.exports = { reverseText, analyzeText };
+module.exports = { app, reverseText, analyzeText };
