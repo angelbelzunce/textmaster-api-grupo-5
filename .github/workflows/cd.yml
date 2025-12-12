@@ -27,7 +27,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}:textmaster
+          tags: ghcr.io/angelbelzunce/textmaster-api:latest
           
 
   deploy:
